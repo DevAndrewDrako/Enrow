@@ -7,6 +7,7 @@ import java.util.UUID
 
 class Habit private constructor(
     val id: UUID,
+    val name: String,
     private val startedAt: Calendar,
     private var checkedAt: Calendar
 ) {
@@ -28,10 +29,10 @@ class Habit private constructor(
     }
 
     companion object {
-        fun create() : Habit {
+        fun create(name: String) : Habit {
             val current = Calendar.getInstance()
 
-            return Habit(UUID.randomUUID(), current, current)
+            return Habit(UUID.randomUUID(), name, current, current)
         }
     }
 }
