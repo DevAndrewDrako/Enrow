@@ -1,4 +1,4 @@
-package com.andyapps.enrow.ui.theme
+package com.andyapps.enrow.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
