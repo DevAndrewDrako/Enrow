@@ -3,8 +3,10 @@ package com.andyapps.enrow.domain.entity
 import com.andyapps.enrow.domain.error.HabitErrorCode
 import com.andyapps.enrow.domain.error.HabitException
 import java.util.Calendar
+import java.util.UUID
 
 class Habit private constructor(
+    val id: UUID,
     private val startedAt: Calendar,
     private var checkedAt: Calendar
 ) {
@@ -29,7 +31,7 @@ class Habit private constructor(
         fun create() : Habit {
             val current = Calendar.getInstance()
 
-            return Habit(current, current)
+            return Habit(UUID.randomUUID(), current, current)
         }
     }
 }
