@@ -1,4 +1,4 @@
-package com.andyapps.enrow.presentation.ui.feature.habit.screen
+package com.andyapps.enrow.presentation.ui.feature.habit.list
 
 import com.andyapps.enrow.application.dto.HabitDto
 

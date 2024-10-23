@@ -12,6 +12,9 @@ data class HabitEntity(
     @ColumnInfo("ID")
     val id: String,
 
+    @ColumnInfo("NAME")
+    val name: String,
+
     @ColumnInfo("STARTED_AT")
     val startedAt: Long,
 

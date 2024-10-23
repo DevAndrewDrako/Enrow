@@ -12,7 +12,7 @@ class InMemoryHabitService(
 ) : HabitService {
     override fun getAll(): Flow<List<HabitDto>> {
         return flow {
-            database.habits.map { it.asDto() }
+            emit(database.habits.map { it.asDto() })
         }
     }
 }

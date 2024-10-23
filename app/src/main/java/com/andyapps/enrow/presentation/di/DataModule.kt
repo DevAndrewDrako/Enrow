@@ -1,6 +1,7 @@
 package com.andyapps.enrow.presentation.di
 
 import android.content.Context
+import com.andyapps.enrow.application.service.HabitService
 import com.andyapps.enrow.data.AppDatabase
 import com.andyapps.enrow.data.InMemoryDatabase
 import com.andyapps.enrow.data.service.InMemoryHabitService
@@ -23,7 +24,7 @@ object DataModule {
         return InMemoryDatabase()
     }
     @Provides
-    fun providesInMemoryHabitService(database: InMemoryDatabase) : InMemoryHabitService {
+    fun providesInMemoryHabitService(database: InMemoryDatabase) : HabitService {
         return InMemoryHabitService(database)
     }
 }

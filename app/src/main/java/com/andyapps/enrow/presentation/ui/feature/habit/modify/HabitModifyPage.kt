@@ -1,0 +1,54 @@
+package com.andyapps.enrow.presentation.ui.feature.habit.modify
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
+
+@Composable
+fun HabitModifyPage(
+    navController: NavController,
+    vm: HabitAggregateViewModel
+) {
+    val state by vm.modifyState.collectAsState()
+
+    HabitModifyPage(state = state)
+}
+
+@Composable
+fun HabitModifyPage(
+    state: HabitModifyPageState
+) {
+    var name by remember {
+        mutableStateOf(state.name)
+    }
+    
+    Column {
+        Row(
+            modifier = Modifier.weight(1f)
+        ) {
+            TextField(value = name, onValueChange = {
+                name = it
+            })
+        }
+        Row {
+            Button(
+                onClick = {
+                    
+                }
+            ) {
+                Text(text = "Save")
+            }
+        }
+    }
+}
