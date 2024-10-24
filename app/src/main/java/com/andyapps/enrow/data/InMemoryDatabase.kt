@@ -1,13 +1,10 @@
 package com.andyapps.enrow.data
 
-import com.andyapps.enrow.domain.entity.Habit
-import com.andyapps.enrow.domain.entity.HabitTracking
+import com.andyapps.enrow.data.entity.HabitEntity
+import com.andyapps.enrow.data.entity.HabitTrackingEntity
 
-data class InMemoryDatabase(
-    val habits: MutableList<Habit> = mutableListOf(
-        Habit.create("Working out"),
-        Habit.create("No Smoking"),
-        Habit.create("Drink 4 L in a day"),
-    ),
-    val habitTrackings: MutableList<HabitTracking> = mutableListOf()
-)
+class InMemoryDatabase {
+    val habits: MutableList<HabitEntity> = mutableListOf()
+    val habitTrackings: MutableList<HabitTrackingEntity> = mutableListOf()
+}
+

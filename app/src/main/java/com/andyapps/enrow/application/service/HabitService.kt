@@ -8,4 +8,5 @@ interface HabitService {
     fun getAll() : Flow<List<HabitDto>>
     suspend fun existsById(id: UUID) : Boolean
     suspend fun existsByName(name: String) : Boolean
+    suspend fun getByIdWithTracking(id: UUID) : HabitDto?
 }

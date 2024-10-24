@@ -13,7 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
     version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun habitDao() : HabitDao
+//    abstract fun habitDao() : HabitDao
 
     companion object {
         fun create(@ApplicationContext context: Context) : AppDatabase {

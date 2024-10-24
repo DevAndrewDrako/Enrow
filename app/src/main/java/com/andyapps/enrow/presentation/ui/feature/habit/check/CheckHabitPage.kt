@@ -30,6 +30,7 @@ import com.andyapps.enrow.domain.entity.Habit
 import com.andyapps.enrow.domain.valueobject.SelectedDaysSet
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
+import java.util.Calendar
 import java.util.UUID
 
 @Composable
@@ -86,7 +87,7 @@ fun CheckHabitPage(
             ) {
                 Text(text = habit.name, fontSize = 25.sp)
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(text = habit.selectedDays, fontSize = 60.sp)
+                Text(text = habit.daysInRow.toString(), fontSize = 120.sp)
             }
         }
 
@@ -119,7 +120,8 @@ private fun CheckHabitPage_Preview() {
     CheckHabitPage(habit = HabitDto(
         id = UUID.randomUUID(),
         name = "Some test name",
-        selectedDays = SelectedDaysSet.ONLY_WORKING_DAYS
+        latestTrackings = emptyList(),
+        daysInRow = 5
     )) {
 
     }

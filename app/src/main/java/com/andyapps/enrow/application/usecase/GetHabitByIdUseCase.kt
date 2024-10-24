@@ -1,13 +1,13 @@
 package com.andyapps.enrow.application.usecase
 
-import com.andyapps.enrow.domain.entity.Habit
-import com.andyapps.enrow.domain.repository.HabitRepository
+import com.andyapps.enrow.application.dto.HabitDto
+import com.andyapps.enrow.application.service.HabitService
 import java.util.UUID
 
 class GetHabitByIdUseCase(
-    private val repository: HabitRepository
+    private val service: HabitService
 ) {
-    suspend fun execute(id: UUID) : Habit? {
-        return repository.get(id)
+    suspend fun execute(id: UUID) : HabitDto? {
+        return service.getByIdWithTracking(id)
     }
 }

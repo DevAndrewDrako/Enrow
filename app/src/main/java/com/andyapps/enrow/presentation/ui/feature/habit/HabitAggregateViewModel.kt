@@ -2,8 +2,6 @@ package com.andyapps.enrow.presentation.ui.feature.habit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.andyapps.enrow.application.dto.HabitDto
-import com.andyapps.enrow.application.dto.asDto
 import com.andyapps.enrow.application.error.UseCaseError
 import com.andyapps.enrow.application.usecase.CreateHabitUseCase
 import com.andyapps.enrow.application.usecase.DeleteHabitUseCase
@@ -88,11 +86,7 @@ class HabitAggregateViewModel @Inject constructor(
                     getHabitByIdUseCase.execute(event.id)?.let { habit ->
                         _state.update {
                             it.copy(
-                                displayingHabit = HabitDto(
-                                    id = habit.id,
-                                    name = habit.name,
-                                    selectedDays = habit.selectedDays.asString()
-                                )
+                                displayingHabit = habit
                             )
                         }
 
@@ -136,11 +130,7 @@ class HabitAggregateViewModel @Inject constructor(
                         is Res.Success -> {
                             loadAllHabits()
 
-                            _state.update {
-                                it.copy(
-                                    displayingHabit = res.data.asDto()
-                                )
-                            }
+                            // fetch displaying habit
 
                             _navigationChannel.send(NavigationEvent.NavigateUp)
                         }

@@ -66,7 +66,7 @@ fun HabitScreen(
                     ) {
                         Text(text = item.name)
                         Spacer(modifier = Modifier.width(10.dp))
-                        Text(text = item.selectedDays)
+                        Text(text = item.daysInRow.toString())
                     }
                 }
             }

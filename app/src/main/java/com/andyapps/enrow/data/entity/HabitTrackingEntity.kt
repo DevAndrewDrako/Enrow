@@ -5,18 +5,18 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "HABIT"
+    tableName = "HABIT_TRACKING"
 )
-data class HabitEntity(
+data class HabitTrackingEntity(
     @PrimaryKey()
     @ColumnInfo("ID")
     val id: String,
 
-    @ColumnInfo("NAME")
-    var name: String,
+    @ColumnInfo("HABIT_ID")
+    val habitId: String,
 
-    @ColumnInfo("SELECTED_DAYS")
-    val selectedDays: String,
+    @ColumnInfo("HABIT_ACTION")
+    val habitAction: Int,
 
     @ColumnInfo("CREATED_AT")
     val createdAt: Long,

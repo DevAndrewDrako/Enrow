@@ -25,8 +25,8 @@ object UseCaseModule {
         return CreateHabitUseCase(repository, service)
     }
     @Provides
-    fun providesGetHabitByIdUseCase(repository: HabitRepository) : GetHabitByIdUseCase {
-        return GetHabitByIdUseCase(repository)
+    fun providesGetHabitByIdUseCase(service: HabitService) : GetHabitByIdUseCase {
+        return GetHabitByIdUseCase(service)
     }
     @Provides
     fun providesUpdateHabitUseCase(repository: HabitRepository) : UpdateHabitUseCase {

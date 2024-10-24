@@ -4,9 +4,13 @@ import android.content.Context
 import com.andyapps.enrow.application.service.HabitService
 import com.andyapps.enrow.data.AppDatabase
 import com.andyapps.enrow.data.InMemoryDatabase
-import com.andyapps.enrow.data.repository.InMemoryHabitRepository
-import com.andyapps.enrow.data.repository.InMemoryHabitTrackingRepository
-import com.andyapps.enrow.data.service.InMemoryHabitService
+import com.andyapps.enrow.data.dao.HabitDao
+import com.andyapps.enrow.data.dao.HabitTrackingDao
+import com.andyapps.enrow.data.dao.InMemoryHabitDao
+import com.andyapps.enrow.data.dao.InMemoryHabitTrackingDao
+import com.andyapps.enrow.data.repository.DbHabitRepository
+import com.andyapps.enrow.data.repository.DbHabitTrackingRepository
+import com.andyapps.enrow.data.service.DbHabitService
 import com.andyapps.enrow.domain.repository.HabitRepository
 import com.andyapps.enrow.domain.repository.HabitTrackingRepository
 import dagger.Module
@@ -21,24 +25,33 @@ import javax.inject.Singleton
 object DataModule {
 
     @Provides
-    fun providesDatabase(@ApplicationContext context: Context) : AppDatabase {
-        return AppDatabase.create(context)
-    }
-    @Provides
     @Singleton
     fun providesInMemoryDataBase() : InMemoryDatabase {
         return InMemoryDatabase()
     }
     @Provides
-    fun providesInMemoryHabitService(database: InMemoryDatabase) : HabitService {
-        return InMemoryHabitService(database)
+    fun providesInMemoryHabitDao(db: InMemoryDatabase) : HabitDao {
+        return InMemoryHabitDao(db)
     }
     @Provides
-    fun providesInMemoryHabitRepository(database: InMemoryDatabase) : HabitRepository {
-        return InMemoryHabitRepository(database)
+    fun providesInMemoryHabitTrackingDao(db: InMemoryDatabase) : HabitTrackingDao {
+        return InMemoryHabitTrackingDao(db)
+    }
+
+    @Provides
+    fun providesDatabase(@ApplicationContext context: Context) : AppDatabase {
+        return AppDatabase.create(context)
     }
     @Provides
-    fun providesInMemoryHabitTrackingRepository(database: InMemoryDatabase) : HabitTrackingRepository {
-        return InMemoryHabitTrackingRepository(database)
+    fun providesInMemoryHabitService(dao: HabitDao) : HabitService {
+        return DbHabitService(dao)
+    }
+    @Provides
+    fun providesInMemoryHabitRepository(dao: HabitDao) : HabitRepository {
+        return DbHabitRepository(dao)
+    }
+    @Provides
+    fun providesInMemoryHabitTrackingRepository(dao: HabitTrackingDao) : HabitTrackingRepository {
+        return DbHabitTrackingRepository(dao)
     }
 }
