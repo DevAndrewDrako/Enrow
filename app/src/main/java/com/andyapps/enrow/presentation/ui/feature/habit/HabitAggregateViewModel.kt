@@ -12,7 +12,7 @@ import com.andyapps.enrow.application.usecase.GetHabitByIdUseCase
 import com.andyapps.enrow.application.usecase.UpdateHabitUseCase
 import com.andyapps.enrow.domain.entity.Habit
 import com.andyapps.enrow.presentation.ui.feature.habit.check.CheckHabitEvent
-import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreenEvent
+import com.andyapps.enrow.presentation.ui.feature.habit.menu.HabitScreenEvent
 import com.andyapps.enrow.presentation.ui.feature.habit.modify.ModifyHabitEvent
 import com.andyapps.enrow.presentation.ui.feature.navigation.NavigationEvent
 import com.andyapps.enrow.presentation.ui.feature.navigation.Route
@@ -91,7 +91,7 @@ class HabitAggregateViewModel @Inject constructor(
                                 displayingHabit = HabitDto(
                                     id = habit.id,
                                     name = habit.name,
-                                    daysInRow = habit.daysInRow()
+                                    selectedDays = habit.selectedDays.asString()
                                 )
                             )
                         }
@@ -156,6 +156,12 @@ class HabitAggregateViewModel @Inject constructor(
                             _navigationChannel.send(NavigationEvent.NavigateInclusive(Route.HabitScreen.name))
                         }
                     }
+                }
+            }
+
+            ModifyHabitEvent.Cancel -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _navigationChannel.send(NavigationEvent.NavigateUp)
                 }
             }
         }

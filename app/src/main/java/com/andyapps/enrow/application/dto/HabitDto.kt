@@ -5,5 +5,5 @@ import java.util.UUID
 data class HabitDto(
     val id: UUID,
     val name: String,
-    val daysInRow: Int
+    val selectedDays: String
 )

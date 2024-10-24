@@ -9,9 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.andyapps.enrow.presentation.ui.feature.admin.menu.AdminScreen
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.feature.habit.check.CheckHabitPage
-import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreen
+import com.andyapps.enrow.presentation.ui.feature.habit.menu.HabitScreen
 import com.andyapps.enrow.presentation.ui.feature.habit.modify.ModifyHabitPage
 import com.andyapps.enrow.presentation.ui.shared.sharedViewModel
 
@@ -25,7 +26,7 @@ fun NavigationRoot() {
         NavHost(
             modifier = Modifier.padding(padding),
             navController = navController,
-            startDestination = Route.Habit.name
+            startDestination = Route.Admin.name
         ) {
             navigation(
                 startDestination = Route.HabitScreen.name,
@@ -45,6 +46,16 @@ fun NavigationRoot() {
                     val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
 
                     CheckHabitPage(navController, viewModel)
+                }
+            }
+            navigation(
+                startDestination = Route.AdminScreen.name,
+                route = Route.Admin.name
+            ) {
+                composable(Route.AdminScreen.name) { entry ->
+//                    val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
+
+                    AdminScreen(navController)
                 }
             }
         }
