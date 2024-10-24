@@ -13,11 +13,11 @@ class InMemoryHabitRepository(
     }
 
     override suspend fun update(habit: Habit) {
-        TODO("Not yet implemented")
+        database.habits.find { it.id == habit.id }?.name = habit.name
     }
 
     override suspend fun delete(habit: Habit) {
-        TODO("Not yet implemented")
+        database.habits.removeIf { it.id == habit.id }
     }
 
     override suspend fun get(id: UUID) : Habit? {

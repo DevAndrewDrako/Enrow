@@ -3,9 +3,12 @@ package com.andyapps.enrow.presentation.ui.feature.habit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andyapps.enrow.application.dto.HabitDto
+import com.andyapps.enrow.application.dto.asDto
 import com.andyapps.enrow.application.usecase.CreateHabitUseCase
+import com.andyapps.enrow.application.usecase.DeleteHabitUseCase
 import com.andyapps.enrow.application.usecase.GetAllHabitsUseCase
 import com.andyapps.enrow.application.usecase.GetHabitByIdUseCase
+import com.andyapps.enrow.application.usecase.UpdateHabitUseCase
 import com.andyapps.enrow.domain.entity.Habit
 import com.andyapps.enrow.presentation.ui.feature.habit.check.CheckHabitEvent
 import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreenEvent
@@ -31,6 +34,8 @@ import javax.inject.Inject
 class HabitAggregateViewModel @Inject constructor(
     private val getAllHabitsUseCase: GetAllHabitsUseCase,
     private val createHabitUseCase: CreateHabitUseCase,
+    private val updateHabitUseCase: UpdateHabitUseCase,
+    private val deleteHabitUseCase: DeleteHabitUseCase,
     private val getHabitByIdUseCase: GetHabitByIdUseCase
 ) : ViewModel() {
 
@@ -110,6 +115,38 @@ class HabitAggregateViewModel @Inject constructor(
 
                 }
 
+            }
+
+            is ModifyHabitEvent.Update -> {
+                val habit = Habit.create(event.name)
+
+                viewModelScope.launch(Dispatchers.IO) {
+                    when (val res = updateHabitUseCase.execute(event.id, habit)) {
+                        is Res.Error -> TODO()
+                        is Res.Success -> {
+                            loadAllHabits()
+
+                            _state.update {
+                                it.copy(
+                                    displayingHabit = res.data.asDto()
+                                )
+                            }
+
+                            _navigationChannel.send(NavigationEvent.NavigateUp)
+                        }
+                    }
+                }
+            }
+
+            is ModifyHabitEvent.Delete -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    when (val res = deleteHabitUseCase.execute(event.id)) {
+                        is Res.Error -> TODO()
+                        is Res.Success -> {
+                            _navigationChannel.send(NavigationEvent.NavigateInclusive(Route.HabitScreen.name))
+                        }
+                    }
+                }
             }
         }
     }

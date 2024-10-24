@@ -48,8 +48,8 @@ fun HabitScreen(
     ) {
         Row(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.Center
         ) {
             LazyColumn {

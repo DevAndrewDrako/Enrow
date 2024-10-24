@@ -5,4 +5,12 @@ sealed interface UseCaseError {
         ALREADY_EXISTS_BY_ID,
         ALREADY_EXISTS_BY_NAME
     }
+
+    enum class UpdateHabit {
+        NOT_FOUND
+    }
+
+    enum class DeleteHabit {
+        NOT_FOUND
+    }
 }
