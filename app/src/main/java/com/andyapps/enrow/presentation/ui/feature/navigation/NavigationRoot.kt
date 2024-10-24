@@ -10,7 +10,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreen
-import com.andyapps.enrow.presentation.ui.feature.habit.modify.HabitModifyPage
+import com.andyapps.enrow.presentation.ui.feature.habit.modify.ModifyHabitPage
 import com.andyapps.enrow.presentation.ui.shared.sharedViewModel
 
 @Composable
@@ -21,21 +21,21 @@ fun NavigationRoot() {
         NavHost(
             modifier = Modifier.padding(padding),
             navController = navController,
-            startDestination = "habit"
+            startDestination = Route.Habit.name
         ) {
             navigation(
-                startDestination = "habit_screen",
-                route = "habit"
+                startDestination = Route.HabitScreen.name,
+                route = Route.Habit.name
             ) {
-                composable("habit_screen") { entry ->
+                composable(Route.HabitScreen.name) { entry ->
                     val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
 
                     HabitScreen(navController, viewModel)
                 }
-                composable("habit_modify") { entry ->
+                composable(Route.ModifyHabit.name) { entry ->
                     val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
 
-                    HabitModifyPage(navController, viewModel)
+                    ModifyHabitPage(navController, viewModel)
                 }
             }
         }

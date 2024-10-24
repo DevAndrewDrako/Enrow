@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.shared.ObserveAsEvents
+import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
 
 @Composable
 fun HabitScreen(
@@ -29,9 +30,7 @@ fun HabitScreen(
 ) {
     val state by vm.listState.collectAsState()
 
-    ObserveAsEvents(flow = vm.navigationFlow) { route ->
-        navController.navigate(route.name)
-    }
+    ObserveNavigationEvent(flow = vm.navigationFlow, navController = navController)
 
     HabitScreen(state = state) {
         vm.onScreenEvent(it)
