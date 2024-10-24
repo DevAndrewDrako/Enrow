@@ -6,6 +6,6 @@ fun Habit.asDto() : HabitDto {
     return HabitDto(
         id = id,
         name = name,
-        daysInRow = daysInRow()
+        daysInRow = 0
     )
 }

@@ -5,8 +5,10 @@ import com.andyapps.enrow.application.service.HabitService
 import com.andyapps.enrow.data.AppDatabase
 import com.andyapps.enrow.data.InMemoryDatabase
 import com.andyapps.enrow.data.repository.InMemoryHabitRepository
+import com.andyapps.enrow.data.repository.InMemoryHabitTrackingRepository
 import com.andyapps.enrow.data.service.InMemoryHabitService
 import com.andyapps.enrow.domain.repository.HabitRepository
+import com.andyapps.enrow.domain.repository.HabitTrackingRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,5 +36,9 @@ object DataModule {
     @Provides
     fun providesInMemoryHabitRepository(database: InMemoryDatabase) : HabitRepository {
         return InMemoryHabitRepository(database)
+    }
+    @Provides
+    fun providesInMemoryHabitTrackingRepository(database: InMemoryDatabase) : HabitTrackingRepository {
+        return InMemoryHabitTrackingRepository(database)
     }
 }
