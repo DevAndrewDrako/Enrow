@@ -1,9 +1,11 @@
 package com.andyapps.enrow.presentation.ui.shared
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -13,6 +15,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.andyapps.enrow.presentation.ui.feature.navigation.NavigationEvent
+import com.andyapps.enrow.presentation.ui.feature.toast.ToastEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -27,6 +30,19 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(
     }
 
     return hiltViewModel(parentEntry)
+}
+
+@Composable
+fun ObserveToastEvent(flow: Flow<ToastEvent>) {
+    val context = LocalContext.current
+
+    ObserveAsEvents(flow = flow) {
+        when (it) {
+            is ToastEvent.Show -> {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
 
 @Composable

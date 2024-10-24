@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
@@ -29,6 +30,7 @@ import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.shared.HabitToModify
 import com.andyapps.enrow.presentation.ui.shared.ObserveAsEvents
 import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
+import com.andyapps.enrow.presentation.ui.shared.ObserveToastEvent
 
 @Composable
 fun ModifyHabitPage(
@@ -36,6 +38,8 @@ fun ModifyHabitPage(
     vm: HabitAggregateViewModel
 ) {
     val state by vm.state.collectAsState()
+
+    ObserveToastEvent(flow = vm.toastFlow)
 
     ObserveNavigationEvent(flow = vm.navigationFlow, navController = navController)
 
@@ -54,7 +58,9 @@ fun ModifyHabitPage(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
     ) {
         Row(
             modifier = Modifier

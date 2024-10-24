@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.andyapps.enrow.application.dto.HabitDto
 import com.andyapps.enrow.application.dto.asDto
+import com.andyapps.enrow.application.error.UseCaseError
 import com.andyapps.enrow.application.usecase.CreateHabitUseCase
 import com.andyapps.enrow.application.usecase.DeleteHabitUseCase
 import com.andyapps.enrow.application.usecase.GetAllHabitsUseCase
@@ -15,6 +16,7 @@ import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreenEvent
 import com.andyapps.enrow.presentation.ui.feature.habit.modify.ModifyHabitEvent
 import com.andyapps.enrow.presentation.ui.feature.navigation.NavigationEvent
 import com.andyapps.enrow.presentation.ui.feature.navigation.Route
+import com.andyapps.enrow.presentation.ui.feature.toast.ToastEvent
 import com.andyapps.enrow.presentation.ui.shared.HabitToModify
 import com.andyapps.enrow.shared.Res
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +43,9 @@ class HabitAggregateViewModel @Inject constructor(
 
     private val _navigationChannel = Channel<NavigationEvent>()
     val navigationFlow = _navigationChannel.receiveAsFlow()
+
+    private val _toastChannel = Channel<ToastEvent>()
+    val toastFlow = _toastChannel.receiveAsFlow()
 
     private val _state = MutableStateFlow(HabitAggregateState())
     val state = _state.asStateFlow()
@@ -105,7 +110,12 @@ class HabitAggregateViewModel @Inject constructor(
 
                 viewModelScope.launch(Dispatchers.IO) {
                     when (val res = createHabitUseCase.execute(habit)) {
-                        is Res.Error -> TODO()
+                        is Res.Error -> {
+                            when (res.error) {
+                                UseCaseError.CreateHabit.ALREADY_EXISTS_BY_ID -> _toastChannel.send(ToastEvent.Show("A habit with the same id is already exists!"))
+                                UseCaseError.CreateHabit.ALREADY_EXISTS_BY_NAME -> _toastChannel.send(ToastEvent.Show("A habit with the same name is already exists!"))
+                            }
+                        }
                         is Res.Success -> {
                             loadAllHabits()
 
@@ -161,7 +171,7 @@ class HabitAggregateViewModel @Inject constructor(
                     _navigationChannel.send(NavigationEvent.NavigateUp)
                 }
             }
-            is CheckHabitEvent.Delete -> TODO()
+            is CheckHabitEvent.Abort -> TODO()
             is CheckHabitEvent.Edit -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     getHabitByIdUseCase.execute(event.id)?.let { habit ->
