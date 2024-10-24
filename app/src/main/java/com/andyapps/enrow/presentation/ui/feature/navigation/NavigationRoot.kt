@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
+import com.andyapps.enrow.presentation.ui.feature.habit.check.CheckHabitPage
 import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreen
 import com.andyapps.enrow.presentation.ui.feature.habit.modify.ModifyHabitPage
 import com.andyapps.enrow.presentation.ui.shared.sharedViewModel
@@ -36,6 +37,11 @@ fun NavigationRoot() {
                     val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
 
                     ModifyHabitPage(navController, viewModel)
+                }
+                composable(Route.CheckHabit.name) { entry ->
+                    val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
+
+                    CheckHabitPage(navController, viewModel)
                 }
             }
         }

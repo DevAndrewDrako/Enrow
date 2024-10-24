@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
+import com.andyapps.enrow.presentation.ui.shared.HabitToModify
 import com.andyapps.enrow.presentation.ui.shared.ObserveAsEvents
 import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
 
@@ -22,22 +23,22 @@ fun ModifyHabitPage(
     navController: NavController,
     vm: HabitAggregateViewModel
 ) {
-    val state by vm.modifyState.collectAsState()
+    val state by vm.state.collectAsState()
 
     ObserveNavigationEvent(flow = vm.navigationFlow, navController = navController)
 
-    ModifyHabitPage(state = state) {
+    ModifyHabitPage(habit = state.modifyingHabit) {
         vm.onModifyEvent(it)
     }
 }
 
 @Composable
 fun ModifyHabitPage(
-    state: ModifyHabitState,
+    habit: HabitToModify,
     onEvent: (ModifyHabitEvent) -> Unit
 ) {
     var name by remember {
-        mutableStateOf(state.name)
+        mutableStateOf(habit.name)
     }
     
     Column {

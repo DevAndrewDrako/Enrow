@@ -7,5 +7,5 @@ interface HabitRepository {
     suspend fun create(habit: Habit)
     suspend fun update(habit: Habit)
     suspend fun delete(habit: Habit)
-    suspend fun get(id: UUID)
+    suspend fun get(id: UUID) : Habit?
 }

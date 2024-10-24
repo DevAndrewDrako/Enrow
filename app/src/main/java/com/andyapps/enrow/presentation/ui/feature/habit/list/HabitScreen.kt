@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.andyapps.enrow.application.dto.HabitDto
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.shared.ObserveAsEvents
 import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
@@ -28,18 +29,18 @@ fun HabitScreen(
     navController: NavController,
     vm: HabitAggregateViewModel
 ) {
-    val state by vm.listState.collectAsState()
+    val state by vm.state.collectAsState()
 
     ObserveNavigationEvent(flow = vm.navigationFlow, navController = navController)
 
-    HabitScreen(state = state) {
+    HabitScreen(habits = state.habits) {
         vm.onScreenEvent(it)
     }
 }
 
 @Composable
 fun HabitScreen(
-    state: HabitScreenState,
+    habits: List<HabitDto>,
     onEvent: (HabitScreenEvent) -> Unit
 ) {
     Column(
@@ -52,7 +53,7 @@ fun HabitScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             LazyColumn {
-                items(state.habits) { item ->  
+                items(habits) { item ->
                     Row(
                         modifier = Modifier
                             .height(50.dp)
