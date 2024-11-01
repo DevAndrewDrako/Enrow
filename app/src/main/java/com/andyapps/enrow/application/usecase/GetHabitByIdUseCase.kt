@@ -8,6 +8,6 @@ class GetHabitByIdUseCase(
     private val service: HabitService
 ) {
     suspend fun execute(id: UUID) : HabitDto? {
-        return service.getByIdWithTracking(id)
+        return service.getById(id)
     }
 }

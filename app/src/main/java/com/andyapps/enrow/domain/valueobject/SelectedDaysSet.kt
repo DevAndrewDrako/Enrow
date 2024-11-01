@@ -1,5 +1,8 @@
 package com.andyapps.enrow.domain.valueobject
 
+import com.andyapps.enrow.domain.error.HabitErrorCode
+import com.andyapps.enrow.domain.error.HabitException
+
 class SelectedDaysSet(
     value: String
 ) {
@@ -7,7 +10,7 @@ class SelectedDaysSet(
 
     init {
         if (value.length != 7) {
-            TODO()
+            throw HabitException(HabitErrorCode.INCORRECT_SELECTED_DAYS)
         }
 
         var dayIndex = 1

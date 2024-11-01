@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "HABIT_TRACKING"
+    tableName = "HABIT_LOG"
 )
-data class HabitTrackingEntity(
+data class HabitLogEntity(
     @PrimaryKey()
     @ColumnInfo("ID")
     val id: String,
@@ -15,8 +15,11 @@ data class HabitTrackingEntity(
     @ColumnInfo("HABIT_ID")
     val habitId: String,
 
-    @ColumnInfo("HABIT_ACTION")
-    val habitAction: Int,
+    @ColumnInfo("EVENT_TYPE")
+    val eventType: Int,
+
+    @ColumnInfo("DESCRIPTION")
+    val description: String,
 
     @ColumnInfo("CREATED_AT")
     val createdAt: Long,

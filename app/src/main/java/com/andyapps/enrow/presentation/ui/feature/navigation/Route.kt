@@ -7,5 +7,5 @@ sealed class Route(val name: String) {
     data object CheckHabit : Route("habit_check")
     data object Admin : Route("admin")
     data object AdminScreen : Route("admin_screen")
-    data object AdminHabitTracker : Route("admin_habit_tracker")
+    data object AdminHabitLog : Route("admin_habit_log")
 }

@@ -18,6 +18,9 @@ data class HabitEntity(
     @ColumnInfo("SELECTED_DAYS")
     val selectedDays: String,
 
+    @ColumnInfo("IS_DELETED")
+    var isDeleted: Boolean,
+
     @ColumnInfo("CREATED_AT")
     val createdAt: Long,
 )

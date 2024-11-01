@@ -2,8 +2,7 @@ package com.andyapps.enrow.data.dao
 
 import com.andyapps.enrow.data.InMemoryDatabase
 import com.andyapps.enrow.data.entity.HabitEntity
-import com.andyapps.enrow.data.entity.HabitWithTracking
-import com.andyapps.enrow.domain.enumeration.HabitAction
+import com.andyapps.enrow.data.entity.HabitWithLogs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -15,39 +14,37 @@ class InMemoryHabitDao(
     }
 
     override suspend fun update(habit: HabitEntity) {
-        db.habits.find { it.id == habit.id }?.name = habit.name
-    }
-
-    override suspend fun delete(habit: HabitEntity) {
-        db.habits.removeIf { it.id == habit.id }
-    }
-
-    override fun getAllWithTrackings(): Flow<List<HabitWithTracking>> {
-        return flow {
-            val habits = db.habits.map { habit ->
-                val trackings = db.habitTrackings.filter { it.habitId == habit.id }
-
-                HabitWithTracking(habit, trackings)
-            }
-
-            emit(habits)
+        db.habits.find { it.id == habit.id }?.apply {
+            name = habit.name
+            isDeleted = habit.isDeleted
         }
     }
 
-    override fun getAll(): Flow<List<HabitEntity>> {
-        return flow { emit(db.habits) }
+    override fun getAll(): Flow<List<HabitWithLogs>> {
+        return flow {
+            emit(
+                db.habits.filter { !it.isDeleted }.map { habit ->
+                    val logs = db.habitLogs.filter { it.habitId == habit.id }
+
+                    HabitWithLogs(
+                        habit = habit,
+                        logs = logs
+                    )
+                }
+            )
+        }
     }
 
     override suspend fun getById(id: String): HabitEntity? {
         return db.habits.firstOrNull { it.id == id }
     }
 
-    override suspend fun getByIdWithTracking(id: String): HabitWithTracking? {
+    override suspend fun getByIdWithLogs(id: String): HabitWithLogs? {
         val habit = db.habits.firstOrNull { it.id == id } ?: return null
 
-        return HabitWithTracking(
+        return HabitWithLogs(
             habit = habit,
-            trackings = db.habitTrackings.filter { it.habitId == habit.id }
+            logs = db.habitLogs.filter { it.habitId == habit.id }
         )
     }
 }

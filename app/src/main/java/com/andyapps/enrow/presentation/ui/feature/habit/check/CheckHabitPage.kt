@@ -30,6 +30,7 @@ import com.andyapps.enrow.domain.entity.Habit
 import com.andyapps.enrow.domain.valueobject.SelectedDaysSet
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
+import com.andyapps.enrow.presentation.ui.shared.ObserveToastEvent
 import java.util.Calendar
 import java.util.UUID
 
@@ -40,9 +41,11 @@ fun CheckHabitPage(
 ) {
     val state by vm.state.collectAsState()
 
+    ObserveToastEvent(flow = vm.toastFlow)
+
     ObserveNavigationEvent(flow = vm.navigationFlow, navController = navController)
 
-    state.displayingHabit?.let { habit ->
+    state.selectedHabit?.let { habit ->
         CheckHabitPage(habit = habit) {
             vm.onCheckEvent(it)
         }
@@ -87,7 +90,7 @@ fun CheckHabitPage(
             ) {
                 Text(text = habit.name, fontSize = 25.sp)
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(text = habit.daysInRow.toString(), fontSize = 120.sp)
+                Text(text = habit.daysInRow().toString(), fontSize = 120.sp)
             }
         }
 
@@ -120,8 +123,7 @@ private fun CheckHabitPage_Preview() {
     CheckHabitPage(habit = HabitDto(
         id = UUID.randomUUID(),
         name = "Some test name",
-        latestTrackings = emptyList(),
-        daysInRow = 5
+        checkIns = emptyList()
     )) {
 
     }

@@ -1,11 +1,12 @@
 package com.andyapps.enrow.domain.enumeration
 
-enum class HabitAction {
+enum class HabitEventType {
+    UNDEFINED,
     CREATED,
     UPDATED,
     DELETED,
-    CHECKED,
+    CHECKED_IN,
     MISSED,
     SKIPPED,
-    ABORTED
+    ABORTED,
 }

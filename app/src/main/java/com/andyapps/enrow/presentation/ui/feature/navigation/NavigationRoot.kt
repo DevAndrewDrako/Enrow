@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.andyapps.enrow.presentation.ui.feature.admin.menu.AdminScreen
+import com.andyapps.enrow.presentation.ui.feature.admin.log.habit.HabitLogScreen
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
 import com.andyapps.enrow.presentation.ui.feature.habit.check.CheckHabitPage
 import com.andyapps.enrow.presentation.ui.feature.habit.menu.HabitScreen
@@ -56,6 +57,10 @@ fun NavigationRoot() {
 //                    val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
 
                     AdminScreen(navController)
+                }
+                
+                composable(Route.AdminHabitLog.name) {
+                    HabitLogScreen(navController = navController)
                 }
             }
         }

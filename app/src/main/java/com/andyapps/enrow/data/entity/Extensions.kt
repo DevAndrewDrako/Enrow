@@ -1,46 +1,34 @@
 package com.andyapps.enrow.data.entity
 
-import com.andyapps.enrow.application.dto.HabitDto
-import com.andyapps.enrow.application.dto.HabitTrackingDto
 import com.andyapps.enrow.domain.entity.Habit
-import com.andyapps.enrow.domain.entity.HabitTracking
-import com.andyapps.enrow.domain.enumeration.HabitAction
-import java.util.UUID
+import com.andyapps.enrow.domain.entity.HabitLog
+import com.andyapps.enrow.domain.error.HabitException
 
 fun Habit.asDbEntity() : HabitEntity {
     return HabitEntity(
-        id = id.toString(),
-        name = name,
+        id = id.value.toString(),
+        name = name.value,
         selectedDays = selectedDays.asString(),
-        createdAt = createdAt.timeInMillis
+        createdAt = createdAt.value.timeInMillis,
+        isDeleted = false
     )
 }
 
-fun HabitTracking.asDbEntity() : HabitTrackingEntity {
-    return HabitTrackingEntity(
+fun HabitLog.asDbEntity() : HabitLogEntity {
+    return HabitLogEntity(
         id = id.toString(),
         habitId = habitId.toString(),
-        habitAction = habitAction.ordinal,
-        createdAt = createdAt.timeInMillis
+        eventType = eventType.ordinal,
+        createdAt = createdAt.timeInMillis,
+        description = description
     )
 }
 
-fun HabitTrackingEntity.asDto() : HabitTrackingDto {
-    return HabitTrackingDto(
-        id = UUID.fromString(id),
-        habitId = UUID.fromString(habitId),
-        habitAction = HabitAction.entries.first { it.ordinal == habitAction }
-    )
-}
-fun HabitWithTracking.asDto() : HabitDto {
-    return HabitDto(
-        id = UUID.fromString(habit.id),
-        name = habit.name,
-        latestTrackings = trackings
-            .filter { it.habitAction == HabitAction.CHECKED.ordinal }
-            .sortedByDescending { it.createdAt }
-            .take(5)
-            .map { it.asDto() },
-        daysInRow = trackings.count { it.habitAction == HabitAction.CHECKED.ordinal }
-    )
+fun HabitEntity.asDomainOrNull() : Habit? {
+    return try {
+        Habit.create(id, name, selectedDays, createdAt)
+    }
+    catch (ex: HabitException) {
+        null
+    }
 }

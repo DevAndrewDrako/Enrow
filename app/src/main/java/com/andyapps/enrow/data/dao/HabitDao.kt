@@ -1,12 +1,7 @@
 package com.andyapps.enrow.data.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
 import com.andyapps.enrow.data.entity.HabitEntity
-import com.andyapps.enrow.data.entity.HabitWithTracking
+import com.andyapps.enrow.data.entity.HabitWithLogs
 import kotlinx.coroutines.flow.Flow
 
 //@Dao
@@ -17,18 +12,12 @@ interface HabitDao {
 //    @Update
     suspend fun update(habit: HabitEntity)
 
-//    @Delete
-    suspend fun delete(habit: HabitEntity)
-
     // @Query()
-    fun getAllWithTrackings() : Flow<List<HabitWithTracking>>
-
-    // @Query()
-    fun getAll() : Flow<List<HabitEntity>>
+    fun getAll() : Flow<List<HabitWithLogs>>
 
     // @Query("")
     suspend fun getById(id: String) : HabitEntity?
 
     // @Query("")
-    suspend fun getByIdWithTracking(id: String) : HabitWithTracking?
+    suspend fun getByIdWithLogs(id: String) : HabitWithLogs?
 }

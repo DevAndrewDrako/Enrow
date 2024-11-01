@@ -13,4 +13,11 @@ sealed interface UseCaseError {
     enum class DeleteHabit {
         NOT_FOUND
     }
+
+    enum class CheckHabit {
+        NOT_FOUND,
+        JUST_CREATED,
+        ALREADY_CHECKED,
+        EXPIRED
+    }
 }

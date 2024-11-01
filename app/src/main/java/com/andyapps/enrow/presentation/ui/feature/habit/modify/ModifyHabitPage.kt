@@ -29,8 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.andyapps.enrow.application.dto.HabitDto
 import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
-import com.andyapps.enrow.presentation.ui.shared.HabitToModify
 import com.andyapps.enrow.presentation.ui.shared.ObserveAsEvents
 import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
 import com.andyapps.enrow.presentation.ui.shared.ObserveToastEvent
@@ -46,18 +46,18 @@ fun ModifyHabitPage(
 
     ObserveNavigationEvent(flow = vm.navigationFlow, navController = navController)
 
-    ModifyHabitPage(habit = state.modifyingHabit) {
+    ModifyHabitPage(habit = state.selectedHabit) {
         vm.onModifyEvent(it)
     }
 }
 
 @Composable
 fun ModifyHabitPage(
-    habit: HabitToModify,
+    habit: HabitDto? = null,
     onEvent: (ModifyHabitEvent) -> Unit
 ) {
     var name by remember {
-        mutableStateOf(habit.name)
+        mutableStateOf(habit?.name ?: "")
     }
 
     Column(
@@ -96,7 +96,7 @@ fun ModifyHabitPage(
             Button(
                 modifier = Modifier.width(180.dp),
                 onClick = {
-                    if (habit.id != null) {
+                    if (habit != null) {
                         onEvent(ModifyHabitEvent.Update(habit.id, name))
                     }
                     else {
@@ -104,7 +104,7 @@ fun ModifyHabitPage(
                     }
                 }
             ) {
-                if (habit.id != null) {
+                if (habit != null) {
                     Text(text = "Update")
                 }
                 else {
@@ -112,12 +112,12 @@ fun ModifyHabitPage(
                 }
             }
         }
-        habit.id?.let {
+        habit?.let {
             Row {
                 TextButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        onEvent(ModifyHabitEvent.Delete(it))
+                        onEvent(ModifyHabitEvent.Delete(it.id))
                     }
                 ) {
                     Text(text = "Delete")
@@ -130,7 +130,7 @@ fun ModifyHabitPage(
 @Preview
 @Composable
 private fun ModifyHabitPage_Preview() {
-    ModifyHabitPage(habit = HabitToModify()) {
+    ModifyHabitPage {
         
     }
 }
