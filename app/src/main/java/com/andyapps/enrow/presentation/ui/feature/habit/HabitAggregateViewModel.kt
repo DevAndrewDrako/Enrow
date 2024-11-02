@@ -157,7 +157,7 @@ class HabitAggregateViewModel @Inject constructor(
                                     showToastInScope(ToastEvent.Show("Habit just created! Wait for tomorrow!"))
                                 }
                                 UseCaseError.CheckHabit.ALREADY_CHECKED -> {
-                                    showToastInScope(ToastEvent.Show("Habit already created! Wait for tomorrow!"))
+                                    showToastInScope(ToastEvent.Show("Habit already checked in! Wait for tomorrow!"))
                                 }
                                 UseCaseError.CheckHabit.EXPIRED -> {
                                     showToastInScope(ToastEvent.Show("Habit is expired!"))
@@ -165,7 +165,8 @@ class HabitAggregateViewModel @Inject constructor(
                             }
                         }
                         is Res.Success -> {
-                            navigate(NavigationEvent.NavigateUp)
+                            fetchAndUpdateSelectedHabit(event.id)
+                            loadAllHabits()
                         }
                     }
                 }

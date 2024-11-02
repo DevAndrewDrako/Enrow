@@ -45,19 +45,19 @@ object DataModule {
         return AppDatabase.create(context)
     }
     @Provides
-    fun providesInMemoryHabitService(dao: HabitDao) : HabitService {
-        return DbHabitService(dao)
+    fun providesDbHabitService(db: AppDatabase) : HabitService {
+        return DbHabitService(db.habitDao())
     }
     @Provides
-    fun providesInMemoryHabitTrackingService(dao: HabitLogDao) : HabitLogService {
-        return DbHabitLogService(dao)
+    fun providesDbHabitLogService(db: AppDatabase) : HabitLogService {
+        return DbHabitLogService(db.habitLogDao())
     }
     @Provides
-    fun providesInMemoryHabitRepository(dao: HabitDao) : HabitRepository {
-        return DbHabitRepository(dao)
+    fun providesDbHabitRepository(db: AppDatabase) : HabitRepository {
+        return DbHabitRepository(db.habitDao())
     }
     @Provides
-    fun providesInMemoryHabitTrackingRepository(dao: HabitLogDao) : HabitLogRepository {
-        return DbHabitLogRepository(dao)
+    fun providesDbHabitLogRepository(db: AppDatabase) : HabitLogRepository {
+        return DbHabitLogRepository(db.habitLogDao())
     }
 }
