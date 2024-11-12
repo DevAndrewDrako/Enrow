@@ -2,7 +2,7 @@ package com.andyapps.enrow.domain.entity
 
 import com.andyapps.enrow.domain.error.HabitErrorCode
 import com.andyapps.enrow.domain.error.HabitException
-import com.andyapps.enrow.domain.valueobject.SelectedDaysSet
+import com.andyapps.enrow.domain.valueobject.CheckInDaysSet
 import com.andyapps.enrow.shared.toUUID
 import java.util.Calendar
 import java.util.UUID
@@ -10,7 +10,7 @@ import java.util.UUID
 class Habit private constructor(
     val id: Id,
     var name: Name,
-    var selectedDays: SelectedDaysSet,
+    var checkInDays: CheckInDaysSet,
     val createdAt: DateTime
 ) {
 
@@ -42,20 +42,21 @@ class Habit private constructor(
 
     fun update(new: Habit) {
         name = new.name
+        checkInDays = new.checkInDays
     }
 
     override fun toString(): String {
-        return "Habit [id=\"${id.value}\", name=\"${name.value}\", selectedDays=\"${selectedDays.asString()}\"]"
+        return "Habit [id=\"${id.value}\", name=\"${name.value}\", selectedDays=\"$checkInDays\"]"
     }
 
     companion object {
-        fun create(name: String, selectedDays: SelectedDaysSet = SelectedDaysSet.allDays()) : Habit {
+        fun create(name: String, checkInDays: String) : Habit {
             val current = Calendar.getInstance()
 
             return Habit(
                 id = Id(UUID.randomUUID().toString()),
                 name = Name(name),
-                selectedDays = SelectedDaysSet(selectedDays.asString()),
+                checkInDays = CheckInDaysSet(checkInDays),
                 createdAt = DateTime(current.timeInMillis)
             )
         }
@@ -64,7 +65,7 @@ class Habit private constructor(
             return Habit(
                 id = Id(id),
                 name = Name(name),
-                selectedDays = SelectedDaysSet(selectedDays),
+                checkInDays = CheckInDaysSet(selectedDays),
                 createdAt = DateTime(createdAt)
             )
         }

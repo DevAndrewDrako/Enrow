@@ -2,7 +2,6 @@ package com.andyapps.enrow.application.dto
 
 import com.andyapps.enrow.data.entity.HabitLogEntity
 import com.andyapps.enrow.data.entity.HabitWithLogs
-import com.andyapps.enrow.domain.entity.Habit
 import com.andyapps.enrow.domain.enumeration.HabitEventType
 import java.util.Calendar
 import java.util.UUID
@@ -22,6 +21,6 @@ fun HabitWithLogs.asDto() : HabitDto {
         id = UUID.fromString(habit.id),
         name = habit.name,
         checkIns = logs.filter { it.eventType == HabitEventType.CHECKED_IN.ordinal }.map { Calendar.getInstance().apply { timeInMillis = it.createdAt } },
-        selectedDays = habit.selectedDays
+        checkInDays = habit.checkInDays
     )
 }

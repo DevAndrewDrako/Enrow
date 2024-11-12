@@ -1,5 +1,6 @@
 package com.andyapps.enrow.application.dto
 
+import com.andyapps.enrow.domain.valueobject.CheckInDaysSet
 import java.util.Calendar
 import java.util.UUID
 
@@ -7,7 +8,7 @@ data class HabitDto(
     val id: UUID,
     val name: String,
     private val checkIns: List<Calendar>,
-    private val selectedDays: String,
+    private val checkInDays: String,
 ) {
     fun daysInRow() : Int {
         return checkIns.count()
@@ -18,7 +19,7 @@ data class HabitDto(
     }
 
     fun selectedDays() : Map<Int, Boolean> {
-        val map = selectedDays.mapIndexed { index, c ->  Pair(index + 1, c == '1')}.toMap()
+        val map = checkInDays.mapIndexed { index, c ->  Pair(index, c == CheckInDaysSet.DAY_IS_SELECTED)}.toMap()
 
         return map
     }

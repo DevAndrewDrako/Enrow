@@ -18,6 +18,7 @@ import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitListItemUiMode
 import com.andyapps.enrow.presentation.ui.feature.navigation.NavigationEvent
 import com.andyapps.enrow.presentation.ui.feature.navigation.Route
 import com.andyapps.enrow.presentation.ui.feature.toast.ToastEvent
+import com.andyapps.enrow.presentation.ui.shared.DomainHelper
 import com.andyapps.enrow.presentation.ui.shared.ViewModel
 import com.andyapps.enrow.shared.Res
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,7 +70,7 @@ class HabitViewModel @Inject constructor(
                 launchIn {
                     _state.update {
                         it.copy(
-                            habitForm = null
+                            habitForm = HabitFormUiModel.Create.default()
                         )
                     }
                     navigateInScope(NavigationEvent.NavigateToRoute(Route.HabitForm.name))
@@ -89,7 +90,7 @@ class HabitViewModel @Inject constructor(
     fun onModifyEvent(event: HabitFormEvent) {
         when (event) {
             is HabitFormEvent.Create -> {
-                val habit = Habit.create(event.name)
+                val habit = Habit.create(event.name, DomainHelper.convertToCheckInDays(event.checkInDays))
 
                 launchIn {
                     when (val res = createHabitUseCase.execute(habit)) {
@@ -111,7 +112,7 @@ class HabitViewModel @Inject constructor(
             }
 
             is HabitFormEvent.Update -> {
-                val habit = Habit.create(event.name)
+                val habit = Habit.create(event.name, DomainHelper.convertToCheckInDays(event.checkInDays))
 
                 launchIn {
                     when (val res = updateHabitUseCase.execute(event.id, habit)) {
@@ -187,7 +188,7 @@ class HabitViewModel @Inject constructor(
                     getHabitByIdUseCase.execute(event.id)?.let { habit ->
                         _state.update {
                             it.copy(
-                                habitForm = HabitFormUiModel.createFromDto(habit)
+                                habitForm = HabitFormUiModel.Update.fromDto(habit)
                             )
                         }
 

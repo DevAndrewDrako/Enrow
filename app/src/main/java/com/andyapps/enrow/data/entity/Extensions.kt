@@ -8,7 +8,7 @@ fun Habit.asDbEntity() : HabitEntity {
     return HabitEntity(
         id = id.value.toString(),
         name = name.value,
-        selectedDays = selectedDays.asString(),
+        checkInDays = checkInDays.toString(),
         createdAt = createdAt.value.timeInMillis,
         isDeleted = false
     )
@@ -26,7 +26,7 @@ fun HabitLog.asDbEntity() : HabitLogEntity {
 
 fun HabitEntity.asDomainOrNull() : Habit? {
     return try {
-        Habit.create(id, name, selectedDays, createdAt)
+        Habit.create(id, name, checkInDays, createdAt)
     }
     catch (ex: HabitException) {
         null

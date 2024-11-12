@@ -15,8 +15,8 @@ data class HabitEntity(
     @ColumnInfo("NAME")
     var name: String,
 
-    @ColumnInfo("SELECTED_DAYS")
-    val selectedDays: String,
+    @ColumnInfo("CHECK_IN_DAYS")
+    val checkInDays: String,
 
     @ColumnInfo("IS_DELETED")
     var isDeleted: Boolean,
