@@ -1,4 +1,4 @@
-package com.andyapps.enrow.presentation.ui.feature.habit.menu
+package com.andyapps.enrow.presentation.ui.feature.habit.list
 
 import java.util.UUID
 

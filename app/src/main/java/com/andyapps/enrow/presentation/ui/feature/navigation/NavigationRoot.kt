@@ -11,10 +11,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.andyapps.enrow.presentation.ui.feature.admin.menu.AdminScreen
 import com.andyapps.enrow.presentation.ui.feature.admin.log.habit.HabitLogScreen
-import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
-import com.andyapps.enrow.presentation.ui.feature.habit.check.CheckHabitPage
-import com.andyapps.enrow.presentation.ui.feature.habit.menu.HabitScreen
-import com.andyapps.enrow.presentation.ui.feature.habit.modify.ModifyHabitPage
+import com.andyapps.enrow.presentation.ui.feature.habit.HabitViewModel
+import com.andyapps.enrow.presentation.ui.feature.habit.check.HabitCheckView
+import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreen
+import com.andyapps.enrow.presentation.ui.feature.habit.form.HabitFormScreen
 import com.andyapps.enrow.presentation.ui.shared.sharedViewModel
 
 @Composable
@@ -34,19 +34,19 @@ fun NavigationRoot() {
                 route = Route.Habit.name
             ) {
                 composable(Route.HabitScreen.name) { entry ->
-                    val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
+                    val viewModel = entry.sharedViewModel<HabitViewModel>(navController)
 
                     HabitScreen(navController, viewModel)
                 }
-                composable(Route.ModifyHabit.name) { entry ->
-                    val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
+                composable(Route.HabitForm.name) { entry ->
+                    val viewModel = entry.sharedViewModel<HabitViewModel>(navController)
 
-                    ModifyHabitPage(navController, viewModel)
+                    HabitFormScreen(navController, viewModel)
                 }
-                composable(Route.CheckHabit.name) { entry ->
-                    val viewModel = entry.sharedViewModel<HabitAggregateViewModel>(navController)
+                composable(Route.HabitCheck.name) { entry ->
+                    val viewModel = entry.sharedViewModel<HabitViewModel>(navController)
 
-                    CheckHabitPage(navController, viewModel)
+                    HabitCheckView(navController, viewModel)
                 }
             }
             navigation(

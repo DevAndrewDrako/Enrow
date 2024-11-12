@@ -9,28 +9,29 @@ import com.andyapps.enrow.application.usecase.GetAllHabitsUseCase
 import com.andyapps.enrow.application.usecase.GetHabitByIdUseCase
 import com.andyapps.enrow.application.usecase.UpdateHabitUseCase
 import com.andyapps.enrow.domain.entity.Habit
-import com.andyapps.enrow.presentation.ui.feature.habit.check.CheckHabitEvent
-import com.andyapps.enrow.presentation.ui.feature.habit.menu.HabitScreenEvent
-import com.andyapps.enrow.presentation.ui.feature.habit.modify.ModifyHabitEvent
+import com.andyapps.enrow.presentation.ui.feature.habit.check.HabitCheckEvent
+import com.andyapps.enrow.presentation.ui.feature.habit.check.HabitCheckUiModel
+import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreenEvent
+import com.andyapps.enrow.presentation.ui.feature.habit.form.HabitFormEvent
+import com.andyapps.enrow.presentation.ui.feature.habit.form.HabitFormUiModel
+import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitListItemUiModel
 import com.andyapps.enrow.presentation.ui.feature.navigation.NavigationEvent
 import com.andyapps.enrow.presentation.ui.feature.navigation.Route
 import com.andyapps.enrow.presentation.ui.feature.toast.ToastEvent
 import com.andyapps.enrow.presentation.ui.shared.ViewModel
 import com.andyapps.enrow.shared.Res
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class HabitAggregateViewModel @Inject constructor(
+class HabitViewModel @Inject constructor(
     private val getAllHabitsUseCase: GetAllHabitsUseCase,
     private val createHabitUseCase: CreateHabitUseCase,
     private val updateHabitUseCase: UpdateHabitUseCase,
@@ -39,7 +40,7 @@ class HabitAggregateViewModel @Inject constructor(
     private val checkHabitUseCase: CheckHabitUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(HabitAggregateState())
+    private val _state = MutableStateFlow(HabitState())
     val state = _state.asStateFlow()
 
     private var loadAllHabitsJob: Job? = null
@@ -55,7 +56,7 @@ class HabitAggregateViewModel @Inject constructor(
             .onEach { habits ->
                 _state.update {
                     it.copy(
-                        habits = habits
+                        habits = habits.map { habit -> HabitListItemUiModel.createFromDto(habit) }
                     )
                 }
             }
@@ -68,26 +69,26 @@ class HabitAggregateViewModel @Inject constructor(
                 launchIn {
                     _state.update {
                         it.copy(
-                            selectedHabit = null
+                            habitForm = null
                         )
                     }
-                    navigateInScope(NavigationEvent.NavigateToRoute(Route.ModifyHabit.name))
+                    navigateInScope(NavigationEvent.NavigateToRoute(Route.HabitForm.name))
                 }
             }
 
             is HabitScreenEvent.SelectHabit -> {
                 launchIn {
-                    fetchAndUpdateSelectedHabit(event.id)
+                    fetchAndUpdateHabitCheck(event.id)
 
-                    navigateInScope(NavigationEvent.NavigateToRoute(Route.CheckHabit.name))
+                    navigateInScope(NavigationEvent.NavigateToRoute(Route.HabitCheck.name))
                 }
             }
         }
     }
 
-    fun onModifyEvent(event: ModifyHabitEvent) {
+    fun onModifyEvent(event: HabitFormEvent) {
         when (event) {
-            is ModifyHabitEvent.Create -> {
+            is HabitFormEvent.Create -> {
                 val habit = Habit.create(event.name)
 
                 launchIn {
@@ -109,16 +110,22 @@ class HabitAggregateViewModel @Inject constructor(
 
             }
 
-            is ModifyHabitEvent.Update -> {
+            is HabitFormEvent.Update -> {
                 val habit = Habit.create(event.name)
 
                 launchIn {
                     when (val res = updateHabitUseCase.execute(event.id, habit)) {
-                        is Res.Error -> TODO()
+                        is Res.Error -> {
+                            when (res.error) {
+                                UseCaseError.UpdateHabit.NOT_FOUND -> {
+                                    showToastInScope(ToastEvent.Show("Habit not found!"))
+                                }
+                            }
+                        }
                         is Res.Success -> {
                             loadAllHabits()
 
-                            fetchAndUpdateSelectedHabit(res.data.id.value)
+                            fetchAndUpdateHabitCheck(res.data.id.value)
 
                             navigateInScope(NavigationEvent.NavigateUp)
                         }
@@ -126,7 +133,7 @@ class HabitAggregateViewModel @Inject constructor(
                 }
             }
 
-            is ModifyHabitEvent.Delete -> {
+            is HabitFormEvent.Delete -> {
                 launchIn {
                     when (val res = deleteHabitUseCase.execute(event.id)) {
                         is Res.Error -> TODO()
@@ -137,15 +144,15 @@ class HabitAggregateViewModel @Inject constructor(
                 }
             }
 
-            ModifyHabitEvent.Cancel -> {
+            HabitFormEvent.Cancel -> {
                 navigate(NavigationEvent.NavigateUp)
             }
         }
     }
 
-    fun onCheckEvent(event: CheckHabitEvent) {
+    fun onCheckEvent(event: HabitCheckEvent) {
         when (event) {
-            is CheckHabitEvent.Check -> {
+            is HabitCheckEvent.Check -> {
                 launchIn {
                     when (val res = checkHabitUseCase.execute(event.id)) {
                         is Res.Error -> {
@@ -165,37 +172,37 @@ class HabitAggregateViewModel @Inject constructor(
                             }
                         }
                         is Res.Success -> {
-                            fetchAndUpdateSelectedHabit(event.id)
+                            fetchAndUpdateHabitCheck(event.id)
                             loadAllHabits()
                         }
                     }
                 }
             }
-            CheckHabitEvent.Close -> {
+            HabitCheckEvent.Close -> {
                 navigate(NavigationEvent.NavigateUp)
             }
-            is CheckHabitEvent.Abort -> TODO()
-            is CheckHabitEvent.Edit -> {
-                viewModelScope.launch(Dispatchers.IO) {
+            is HabitCheckEvent.Abort -> TODO()
+            is HabitCheckEvent.Edit -> {
+                launchIn {
                     getHabitByIdUseCase.execute(event.id)?.let { habit ->
                         _state.update {
                             it.copy(
-                                selectedHabit = habit
+                                habitForm = HabitFormUiModel.createFromDto(habit)
                             )
                         }
 
-                        navigateInScope(NavigationEvent.NavigateToRoute(Route.ModifyHabit.name))
+                        navigateInScope(NavigationEvent.NavigateToRoute(Route.HabitForm.name))
                     }
                 }
             }
         }
     }
 
-    private suspend fun fetchAndUpdateSelectedHabit(id: UUID) {
+    private suspend fun fetchAndUpdateHabitCheck(id: UUID) {
         getHabitByIdUseCase.execute(id)?.let { habit ->
             _state.update {
                 it.copy(
-                    selectedHabit = habit.copy()
+                    habitCheck = HabitCheckUiModel.createFromDto(habit)
                 )
             }
         }

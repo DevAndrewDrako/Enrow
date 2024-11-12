@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,19 +24,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.andyapps.enrow.application.dto.HabitDto
-import com.andyapps.enrow.domain.entity.Habit
-import com.andyapps.enrow.domain.valueobject.SelectedDaysSet
-import com.andyapps.enrow.presentation.ui.feature.habit.HabitAggregateViewModel
+import com.andyapps.enrow.presentation.ui.feature.habit.HabitViewModel
 import com.andyapps.enrow.presentation.ui.shared.ObserveNavigationEvent
 import com.andyapps.enrow.presentation.ui.shared.ObserveToastEvent
-import java.util.Calendar
-import java.util.UUID
 
 @Composable
-fun CheckHabitPage(
+fun HabitCheckView(
     navController: NavController,
-    vm: HabitAggregateViewModel
+    vm: HabitViewModel
 ) {
     val state by vm.state.collectAsState()
 
@@ -45,17 +39,17 @@ fun CheckHabitPage(
 
     ObserveNavigationEvent(flow = vm.navigationFlow, navController = navController)
 
-    state.selectedHabit?.let { habit ->
-        CheckHabitPage(habit = habit) {
+    state.habitCheck?.let { habit ->
+        HabitCheckView(habit = habit) {
             vm.onCheckEvent(it)
         }
-    }
+    } ?: Text(text = "Not Found")
 }
 
 @Composable
-fun CheckHabitPage(
-    habit: HabitDto,
-    onEvent: (CheckHabitEvent) -> Unit,
+fun HabitCheckView(
+    habit: HabitCheckUiModel,
+    onEvent: (HabitCheckEvent) -> Unit,
 ) {
     Column {
         Row(
@@ -65,14 +59,14 @@ fun CheckHabitPage(
         ) {
             IconButton(
                 onClick = {
-                    onEvent(CheckHabitEvent.Close)
+                    onEvent(HabitCheckEvent.Close)
                 }
             ) {
                 Icon(imageVector = Icons.Default.Close, contentDescription = "")
             }
             IconButton(
                 onClick = {
-                    onEvent(CheckHabitEvent.Edit(habit.id))
+                    onEvent(HabitCheckEvent.Edit(habit.id))
                 }
             ) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "")
@@ -90,7 +84,7 @@ fun CheckHabitPage(
             ) {
                 Text(text = habit.name, fontSize = 25.sp)
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(text = habit.daysInRow().toString(), fontSize = 120.sp)
+                Text(text = habit.daysInRow.toString(), fontSize = 120.sp)
             }
         }
 
@@ -98,7 +92,7 @@ fun CheckHabitPage(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    onEvent(CheckHabitEvent.Check(habit.id))
+                    onEvent(HabitCheckEvent.Check(habit.id))
                 }
             ) {
                 Text(text = "Check")    
@@ -120,11 +114,5 @@ fun CheckHabitPage(
 @Preview
 @Composable
 private fun CheckHabitPage_Preview() {
-    CheckHabitPage(habit = HabitDto(
-        id = UUID.randomUUID(),
-        name = "Some test name",
-        checkIns = emptyList()
-    )) {
 
-    }
 }

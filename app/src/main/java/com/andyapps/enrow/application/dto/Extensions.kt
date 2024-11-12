@@ -21,6 +21,7 @@ fun HabitWithLogs.asDto() : HabitDto {
     return HabitDto(
         id = UUID.fromString(habit.id),
         name = habit.name,
-        checkIns = logs.filter { it.eventType == HabitEventType.CHECKED_IN.ordinal }.map { Calendar.getInstance().apply { timeInMillis = it.createdAt } }
+        checkIns = logs.filter { it.eventType == HabitEventType.CHECKED_IN.ordinal }.map { Calendar.getInstance().apply { timeInMillis = it.createdAt } },
+        selectedDays = habit.selectedDays
     )
 }
