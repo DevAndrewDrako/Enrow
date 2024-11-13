@@ -16,8 +16,9 @@ sealed interface UseCaseError {
 
     enum class CheckHabit {
         NOT_FOUND,
-        JUST_CREATED,
         ALREADY_CHECKED,
+        CAN_NOT_GET_DAY_OF_A_WEEK,
+        WRONG_DAY_OF_A_WEEK,
         EXPIRED
     }
 }

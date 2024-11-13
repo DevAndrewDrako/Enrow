@@ -6,7 +6,7 @@ enum class HabitEventType {
     UPDATED,
     DELETED,
     CHECKED_IN,
-    MISSED,
+    OVERDUE,
     SKIPPED,
     ABORTED,
 }

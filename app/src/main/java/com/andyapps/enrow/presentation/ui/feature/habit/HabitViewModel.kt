@@ -161,15 +161,15 @@ class HabitViewModel @Inject constructor(
                                 UseCaseError.CheckHabit.NOT_FOUND -> {
                                     showToastInScope(ToastEvent.Show("Habit not found!"))
                                 }
-                                UseCaseError.CheckHabit.JUST_CREATED -> {
-                                    showToastInScope(ToastEvent.Show("Habit just created! Wait for tomorrow!"))
-                                }
                                 UseCaseError.CheckHabit.ALREADY_CHECKED -> {
                                     showToastInScope(ToastEvent.Show("Habit already checked in! Wait for tomorrow!"))
                                 }
                                 UseCaseError.CheckHabit.EXPIRED -> {
                                     showToastInScope(ToastEvent.Show("Habit is expired!"))
                                 }
+
+                                UseCaseError.CheckHabit.CAN_NOT_GET_DAY_OF_A_WEEK -> showToastInScope(ToastEvent.Show("Can't get day of a week from habit."))
+                                UseCaseError.CheckHabit.WRONG_DAY_OF_A_WEEK -> showToastInScope(ToastEvent.Show("Today is not about this habit!"))
                             }
                         }
                         is Res.Success -> {

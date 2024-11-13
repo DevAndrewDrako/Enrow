@@ -3,6 +3,7 @@ package com.andyapps.enrow.application.usecase
 import com.andyapps.enrow.application.error.UseCaseError
 import com.andyapps.enrow.application.service.HabitLogService
 import com.andyapps.enrow.domain.entity.HabitLog
+import com.andyapps.enrow.domain.enumeration.Day
 import com.andyapps.enrow.domain.enumeration.HabitEventType
 import com.andyapps.enrow.domain.repository.HabitRepository
 import com.andyapps.enrow.domain.repository.HabitLogRepository
@@ -20,36 +21,27 @@ class CheckHabitUseCase(
         val habit = habitRepository.get(id)
             ?: return Res.Error(UseCaseError.CheckHabit.NOT_FOUND)
 
-        val log = HabitLog.create(
+        val createdLog = HabitLog.create(
             habitId = habit.id.value,
             eventType = HabitEventType.CHECKED_IN,
             description = "$habit was checked in."
         )
 
-        val lastCheckInLog = service.getLatestLog(habit.id.value.toString(), HabitEventType.CHECKED_IN.ordinal)
+        val day = Day.fromCalendar(createdLog.createdAt) ?: return Res.Error(UseCaseError.CheckHabit.CAN_NOT_GET_DAY_OF_A_WEEK)
 
-        if (lastCheckInLog == null) {
-            if (log.createdAt.isNextDayOf(habit.createdAt.value)) {
-                repository.create(log)
+        if (habit.checkInDays.isSelected(day)) {
+            val lastCheckInLog = service.getLatestLog(habit.id.value.toString(), HabitEventType.CHECKED_IN.ordinal)
 
-                return Res.Success(Unit)
-            }
-            else {
-                return Res.Error(UseCaseError.CheckHabit.JUST_CREATED)
-            }
-        }
-        else {
-            if (log.createdAt.isNextDayOf(lastCheckInLog.createdAt)) {
-                repository.create(log)
-
-                return Res.Success(Unit)
-            }
-            else if(!log.createdAt.isTodayOf(lastCheckInLog.createdAt)) {
-                return Res.Error(UseCaseError.CheckHabit.EXPIRED)
-            }
-            else {
+            if (lastCheckInLog != null && lastCheckInLog.createdAt.isTodayOf(createdLog.createdAt)) {
                 return Res.Error(UseCaseError.CheckHabit.ALREADY_CHECKED)
             }
+
+            repository.create(createdLog)
+
+            return Res.Success(Unit)
+        }
+        else {
+            return Res.Error(UseCaseError.CheckHabit.WRONG_DAY_OF_A_WEEK)
         }
     }
 }
