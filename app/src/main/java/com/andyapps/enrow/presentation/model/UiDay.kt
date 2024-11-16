@@ -1,9 +1,9 @@
 package com.andyapps.enrow.presentation.model
 
-import com.andyapps.enrow.domain.enumeration.Day
+import java.time.DayOfWeek
 
 data class UiDay(
-    val value: Day
+    val value: DayOfWeek
 ) {
     fun asString() : String {
         return value.toString()

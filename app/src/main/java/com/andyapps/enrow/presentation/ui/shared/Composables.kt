@@ -47,14 +47,5 @@ fun HabitLogListItemView(
 @Preview
 @Composable
 private fun HabitLogListItemPreview() {
-    HabitLogListItemView(
-        item = HabitLogListItem(
-            HabitLogDto(
-                "Habit Name",
-                HabitEventType.CHECKED_IN,
-                "Description some long description some long description some long description some long description some long description.",
-                Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.apply { add(Calendar.MONTH, 2) }
-            )
-        )
-    )
+
 }

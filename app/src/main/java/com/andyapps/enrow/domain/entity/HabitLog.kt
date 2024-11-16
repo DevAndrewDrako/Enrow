@@ -1,6 +1,8 @@
 package com.andyapps.enrow.domain.entity
 
 import com.andyapps.enrow.domain.enumeration.HabitEventType
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.UUID
 
@@ -9,7 +11,7 @@ class HabitLog private constructor(
     val habitId: UUID,
     val eventType: HabitEventType,
     val description: String,
-    val createdAt: Calendar
+    val createdAt: LocalDateTime
 ) {
     companion object {
         fun create(habitId: UUID, eventType: HabitEventType, description: String = "") : HabitLog {
@@ -17,7 +19,7 @@ class HabitLog private constructor(
                 id = UUID.randomUUID(),
                 habitId = habitId,
                 eventType = eventType,
-                createdAt = Calendar.getInstance(),
+                createdAt = LocalDateTime.now(),
                 description = description
             )
         }

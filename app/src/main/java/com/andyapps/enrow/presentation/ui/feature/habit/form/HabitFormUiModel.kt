@@ -1,10 +1,10 @@
 package com.andyapps.enrow.presentation.ui.feature.habit.form
 
 import com.andyapps.enrow.application.dto.HabitDto
-import com.andyapps.enrow.domain.enumeration.Day
 import com.andyapps.enrow.presentation.model.UiDay
 import com.andyapps.enrow.presentation.ui.shared.Filler
 import com.andyapps.enrow.presentation.ui.shared.SelectItem
+import java.time.DayOfWeek
 import java.util.UUID
 
 sealed class HabitFormUiModel(
@@ -32,8 +32,8 @@ sealed class HabitFormUiModel(
     ) : HabitFormUiModel(name, selectedDays) {
         companion object {
             fun fromDto(dto: HabitDto) : Update {
-                val selectedDays = Day.entries.map { day ->
-                    val isSelected = dto.selectedDays()[day.ordinal] ?: false
+                val selectedDays = DayOfWeek.entries.map { day ->
+                    val isSelected = dto.isCheckInDay(day)
 
                     return@map SelectItem(UiDay(day), isSelected)
                 }
@@ -46,6 +46,4 @@ sealed class HabitFormUiModel(
             }
         }
     }
-
-
 }

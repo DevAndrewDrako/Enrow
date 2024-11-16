@@ -3,7 +3,9 @@ package com.andyapps.enrow.domain.entity
 import com.andyapps.enrow.domain.error.HabitErrorCode
 import com.andyapps.enrow.domain.error.HabitException
 import com.andyapps.enrow.domain.valueobject.CheckInDaysSet
+import com.andyapps.enrow.shared.toLocalDateTime
 import com.andyapps.enrow.shared.toUUID
+import java.time.LocalDateTime
 import java.util.Calendar
 import java.util.UUID
 
@@ -33,11 +35,7 @@ class Habit private constructor(
     class DateTime(
         value: Long
     ) {
-        val value: Calendar = Calendar.getInstance()
-
-        init {
-            this.value.timeInMillis = value
-        }
+        val value: LocalDateTime = value.toLocalDateTime()
     }
 
     fun update(new: Habit) {

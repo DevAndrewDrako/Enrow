@@ -1,5 +1,11 @@
 package com.andyapps.enrow.shared
 
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -17,14 +23,18 @@ fun Calendar.toFormat() : String {
     return "$date $time"
 }
 
-fun Calendar.isNextDayOf(date: Calendar) : Boolean {
-    val nextDay = (date.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, 1) }
-
-    return this[Calendar.YEAR] == nextDay[Calendar.YEAR]
-            && this[Calendar.DAY_OF_YEAR] == nextDay[Calendar.DAY_OF_YEAR]
+fun LocalDateTime.toFormat(pattern: String = "dd/MM/yyyy HH:mm:ss") : String {
+    return this.format(DateTimeFormatter.ofPattern(pattern))
 }
 
-fun Calendar.isTodayOf(date: Calendar) : Boolean {
-    return this[Calendar.YEAR] == date[Calendar.YEAR]
-            && this[Calendar.DAY_OF_YEAR] == date[Calendar.DAY_OF_YEAR]
+fun LocalDateTime.isSameDay(other: LocalDateTime): Boolean {
+    return this.year == other.year && this.dayOfYear == other.dayOfYear
+}
+
+fun Long.toLocalDateTime() : LocalDateTime {
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneOffset.UTC)
+}
+
+fun LocalDateTime.toMilliseconds() : Long {
+    return ZonedDateTime.of(this, ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

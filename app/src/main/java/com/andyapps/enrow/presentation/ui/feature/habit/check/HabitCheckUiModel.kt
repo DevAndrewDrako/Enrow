@@ -6,14 +6,16 @@ import java.util.UUID
 data class HabitCheckUiModel(
     val id: UUID,
     val name: String,
-    val daysInRow: Int
+    val daysInRow: Int,
+    val isCheckInEnabled: Boolean,
 ) {
     companion object {
         fun createFromDto(dto: HabitDto) : HabitCheckUiModel {
             return HabitCheckUiModel(
                 id = dto.id,
                 name = dto.name,
-                daysInRow = dto.daysInRow()
+                daysInRow = dto.daysInRow(),
+                isCheckInEnabled = dto.canCheckIn()
             )
         }
     }

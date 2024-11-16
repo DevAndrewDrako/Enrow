@@ -92,8 +92,11 @@ fun HabitCheckView(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    onEvent(HabitCheckEvent.Check(habit.id))
-                }
+                    if (habit.isCheckInEnabled) {
+                        onEvent(HabitCheckEvent.Check(habit.id))
+                    }
+                },
+                enabled = habit.isCheckInEnabled
             ) {
                 Text(text = "Check")    
             }

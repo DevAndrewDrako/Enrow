@@ -1,7 +1,7 @@
 package com.andyapps.enrow.presentation.ui.shared
 
-import com.andyapps.enrow.domain.enumeration.Day
 import com.andyapps.enrow.presentation.model.UiDay
+import java.time.DayOfWeek
 
 object UiTextHelper {
     fun displayCheckInDays(days: Set<UiDay>) : String {
@@ -11,22 +11,26 @@ object UiTextHelper {
 
         val values = days.map { it.value }
 
-        if (values.containsAll(Day.entries)) {
+        if (values.containsAll(DayOfWeek.entries)) {
             return "all days"
         }
-        else if (values.containsAll(listOf(
-            Day.MONDAY,
-            Day.TUESDAY,
-            Day.WEDNESDAY,
-            Day.THURSDAY,
-            Day.FRIDAY,
-        ))) {
+        else if (values.all { value ->
+            listOf(
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY,
+            ).contains(value)
+        }) {
             return "working days only"
         }
-        else if (values.containsAll(listOf(
-                Day.SATURDAY,
-                Day.SUNDAY,
-            ))) {
+        else if (values.all { value ->
+                listOf(
+                    DayOfWeek.SUNDAY,
+                    DayOfWeek.SATURDAY
+                ).contains(value)
+            }) {
             return "weekends only"
         }
         else {
