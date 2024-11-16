@@ -22,7 +22,7 @@ class UpdateHabitUseCase(
 
         logRepository.create(
             HabitLog.create(
-                habitId = alreadyExists.id.value,
+                habitId = alreadyExists.id,
                 eventType = HabitEventType.UPDATED,
                 description = "$oldHabitToString was updated to new $alreadyExists"
             )

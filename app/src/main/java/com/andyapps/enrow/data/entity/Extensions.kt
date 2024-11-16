@@ -2,15 +2,14 @@ package com.andyapps.enrow.data.entity
 
 import com.andyapps.enrow.domain.entity.Habit
 import com.andyapps.enrow.domain.entity.HabitLog
-import com.andyapps.enrow.domain.error.HabitException
 import com.andyapps.enrow.shared.toMilliseconds
 
 fun Habit.asDbEntity() : HabitEntity {
     return HabitEntity(
-        id = id.value.toString(),
-        name = name.value,
+        id = id.toString(),
+        name = name,
         checkInDays = checkInDays.toString(),
-        createdAt = createdAt.value.toMilliseconds(),
+        createdAt = createdAt.toMilliseconds(),
         isDeleted = false
     )
 }
@@ -29,7 +28,7 @@ fun HabitEntity.asDomainOrNull() : Habit? {
     return try {
         Habit.create(id, name, checkInDays, createdAt)
     }
-    catch (ex: HabitException) {
+    catch (ex: Exception) {
         null
     }
 }

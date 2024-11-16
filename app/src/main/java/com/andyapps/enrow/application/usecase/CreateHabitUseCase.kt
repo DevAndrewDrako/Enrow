@@ -15,16 +15,16 @@ class CreateHabitUseCase(
     private val service: HabitService
 ) {
     suspend fun execute(habit: Habit) : Res<Unit, UseCaseError.CreateHabit> {
-        if (service.existsById(habit.id.value))
+        if (service.existsById(habit.id))
             return Res.Error(UseCaseError.CreateHabit.ALREADY_EXISTS_BY_ID)
 
-        if (service.existsByName(habit.name.value))
+        if (service.existsByName(habit.name))
             return Res.Error(UseCaseError.CreateHabit.ALREADY_EXISTS_BY_NAME)
 
         repository.create(habit)
 
         logRepository.create(HabitLog.create(
-            habitId = habit.id.value,
+            habitId = habit.id,
             eventType = HabitEventType.CREATED,
             description = "$habit was created."
         ))

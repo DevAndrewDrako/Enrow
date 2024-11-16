@@ -54,6 +54,8 @@ android {
 dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
+    testImplementation(libs.junit.junit)
+    testImplementation(libs.junit.junit)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
@@ -71,13 +73,17 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Unit Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.google.truth)
+
 }
 
 kapt {

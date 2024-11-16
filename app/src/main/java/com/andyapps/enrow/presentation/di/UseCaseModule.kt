@@ -9,6 +9,7 @@ import com.andyapps.enrow.application.usecase.GetAllHabitsUseCase
 import com.andyapps.enrow.application.usecase.GetHabitByIdUseCase
 import com.andyapps.enrow.application.usecase.GetHabitLogsUseCase
 import com.andyapps.enrow.application.usecase.UpdateHabitUseCase
+import com.andyapps.enrow.application.usecase.ValidateHabitUseCase
 import com.andyapps.enrow.domain.repository.HabitRepository
 import com.andyapps.enrow.domain.repository.HabitLogRepository
 import dagger.Module
@@ -47,5 +48,10 @@ object UseCaseModule {
     @Provides
     fun providesCheckHabitUseCase(habitRepository: HabitRepository, habitLogRepository: HabitLogRepository, habitLogService: HabitLogService) : CheckHabitUseCase {
         return CheckHabitUseCase(habitLogRepository, habitRepository, habitLogService)
+    }
+
+    @Provides
+    fun providesValidateHabitUseCase() : ValidateHabitUseCase {
+        return ValidateHabitUseCase()
     }
 }

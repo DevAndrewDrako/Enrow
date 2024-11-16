@@ -18,7 +18,7 @@ class DeleteHabitUseCase(
 
             logRepository.create(
                 HabitLog.create(
-                    habitId = habit.id.value,
+                    habitId = habit.id,
                     eventType = HabitEventType.DELETED,
                     description = "$habit was deleted."
                 )

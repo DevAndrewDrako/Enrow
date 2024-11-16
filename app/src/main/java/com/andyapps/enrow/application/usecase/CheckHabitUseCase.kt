@@ -20,7 +20,7 @@ class CheckHabitUseCase(
             ?: return Res.Error(UseCaseError.CheckHabit.NOT_FOUND)
 
         val createdLog = HabitLog.create(
-            habitId = habit.id.value,
+            habitId = habit.id,
             eventType = HabitEventType.CHECKED_IN,
             description = "$habit was checked in."
         )
@@ -28,7 +28,7 @@ class CheckHabitUseCase(
         val dayOfWeek = createdLog.createdAt.dayOfWeek
 
         if (habit.checkInDays.isSelected(dayOfWeek)) {
-            val lastCheckInLog = service.getLatestLog(habit.id.value.toString(), HabitEventType.CHECKED_IN.ordinal)
+            val lastCheckInLog = service.getLatestLog(habit.id.toString(), HabitEventType.CHECKED_IN.ordinal)
 
             if (lastCheckInLog != null && lastCheckInLog.createdAt.isSameDay(createdLog.createdAt)) {
                 return Res.Error(UseCaseError.CheckHabit.ALREADY_CHECKED)

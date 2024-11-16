@@ -2,6 +2,7 @@ package com.andyapps.enrow.application.dto
 
 import com.andyapps.enrow.data.entity.HabitLogEntity
 import com.andyapps.enrow.data.entity.HabitWithLogs
+import com.andyapps.enrow.domain.entity.Habit
 import com.andyapps.enrow.domain.enumeration.HabitEventType
 import com.andyapps.enrow.shared.toLocalDateTime
 import java.util.Calendar

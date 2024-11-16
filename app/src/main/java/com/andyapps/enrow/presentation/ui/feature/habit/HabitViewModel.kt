@@ -8,7 +8,9 @@ import com.andyapps.enrow.application.usecase.DeleteHabitUseCase
 import com.andyapps.enrow.application.usecase.GetAllHabitsUseCase
 import com.andyapps.enrow.application.usecase.GetHabitByIdUseCase
 import com.andyapps.enrow.application.usecase.UpdateHabitUseCase
+import com.andyapps.enrow.application.usecase.ValidateHabitUseCase
 import com.andyapps.enrow.domain.entity.Habit
+import com.andyapps.enrow.domain.error.HabitErrorCode
 import com.andyapps.enrow.presentation.ui.feature.habit.check.HabitCheckEvent
 import com.andyapps.enrow.presentation.ui.feature.habit.check.HabitCheckUiModel
 import com.andyapps.enrow.presentation.ui.feature.habit.list.HabitScreenEvent
@@ -21,6 +23,7 @@ import com.andyapps.enrow.presentation.ui.feature.toast.ToastEvent
 import com.andyapps.enrow.presentation.ui.shared.DomainHelper
 import com.andyapps.enrow.presentation.ui.shared.ViewModel
 import com.andyapps.enrow.shared.Res
+import com.andyapps.enrow.shared.toMilliseconds
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -38,7 +42,8 @@ class HabitViewModel @Inject constructor(
     private val updateHabitUseCase: UpdateHabitUseCase,
     private val deleteHabitUseCase: DeleteHabitUseCase,
     private val getHabitByIdUseCase: GetHabitByIdUseCase,
-    private val checkHabitUseCase: CheckHabitUseCase
+    private val checkHabitUseCase: CheckHabitUseCase,
+    private val validateHabitUseCase: ValidateHabitUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HabitState())
@@ -90,48 +95,48 @@ class HabitViewModel @Inject constructor(
     fun onModifyEvent(event: HabitFormEvent) {
         when (event) {
             is HabitFormEvent.Create -> {
-                val habit = Habit.create(event.name, DomainHelper.convertToCheckInDays(event.checkInDays))
+                tryCreateHabit(event.name, DomainHelper.convertToCheckInDays(event.checkInDays))?.let { habit ->
+                    launchIn {
+                        when (val res = createHabitUseCase.execute(habit)) {
+                            is Res.Error -> {
+                                when (res.error) {
+                                    UseCaseError.CreateHabit.ALREADY_EXISTS_BY_ID -> showToastInScope(ToastEvent.Show("A habit with the same id is already exists!"))
+                                    UseCaseError.CreateHabit.ALREADY_EXISTS_BY_NAME -> showToastInScope(ToastEvent.Show("A habit with the same name is already exists!"))
+                                }
+                            }
+                            is Res.Success -> {
+                                loadAllHabits()
 
-                launchIn {
-                    when (val res = createHabitUseCase.execute(habit)) {
-                        is Res.Error -> {
-                            when (res.error) {
-                                UseCaseError.CreateHabit.ALREADY_EXISTS_BY_ID -> showToastInScope(ToastEvent.Show("A habit with the same id is already exists!"))
-                                UseCaseError.CreateHabit.ALREADY_EXISTS_BY_NAME -> showToastInScope(ToastEvent.Show("A habit with the same name is already exists!"))
+                                navigateInScope(NavigationEvent.NavigateUp)
                             }
                         }
-                        is Res.Success -> {
-                            loadAllHabits()
 
-                            navigateInScope(NavigationEvent.NavigateUp)
-                        }
                     }
-
                 }
-
             }
 
             is HabitFormEvent.Update -> {
-                val habit = Habit.create(event.name, DomainHelper.convertToCheckInDays(event.checkInDays))
-
-                launchIn {
-                    when (val res = updateHabitUseCase.execute(event.id, habit)) {
-                        is Res.Error -> {
-                            when (res.error) {
-                                UseCaseError.UpdateHabit.NOT_FOUND -> {
-                                    showToastInScope(ToastEvent.Show("Habit not found!"))
+                tryCreateHabit(event.name, DomainHelper.convertToCheckInDays(event.checkInDays))?.let { habit ->
+                    launchIn {
+                        when (val res = updateHabitUseCase.execute(event.id, habit)) {
+                            is Res.Error -> {
+                                when (res.error) {
+                                    UseCaseError.UpdateHabit.NOT_FOUND -> {
+                                        showToastInScope(ToastEvent.Show("Habit not found!"))
+                                    }
                                 }
                             }
-                        }
-                        is Res.Success -> {
-                            loadAllHabits()
+                            is Res.Success -> {
+                                loadAllHabits()
 
-                            fetchAndUpdateHabitCheck(res.data.id.value)
+                                fetchAndUpdateHabitCheck(res.data.id)
 
-                            navigateInScope(NavigationEvent.NavigateUp)
+                                navigateInScope(NavigationEvent.NavigateUp)
+                            }
                         }
                     }
                 }
+
             }
 
             is HabitFormEvent.Delete -> {
@@ -147,6 +152,25 @@ class HabitViewModel @Inject constructor(
 
             HabitFormEvent.Cancel -> {
                 navigate(NavigationEvent.NavigateUp)
+            }
+        }
+    }
+
+    private fun tryCreateHabit(name: String, checkInDays: String) : Habit? {
+        when (val validationResult = validateHabitUseCase.execute(name, checkInDays, LocalDateTime.now().toMilliseconds())) {
+            is Res.Error -> {
+                when (validationResult.error) {
+                    HabitErrorCode.NAME_IS_BLANK_OR_EMPTY -> showToast(ToastEvent.Show("Habit name is blank or empty!"))
+                    HabitErrorCode.NAME_IS_TOO_LONG -> showToast(ToastEvent.Show("Habit name is too long!"))
+                    HabitErrorCode.AT_LEAST_ONE_DAY_IS_NOT_SELECTED -> showToast(ToastEvent.Show("No days selected!"))
+                    HabitErrorCode.INCORRECTLY_CHOSEN_DAYS -> showToast(ToastEvent.Show("INCORRECTLY_CHOSEN_DAYS"))
+                }
+
+                return null
+            }
+
+            is Res.Success -> {
+                return validationResult.data
             }
         }
     }

@@ -11,7 +11,11 @@ class CheckInDaysSet(
 
     init {
         if (value.length != 7) {
-            throw HabitException(HabitErrorCode.INCORRECT_SELECTED_DAYS)
+            throw HabitException(HabitErrorCode.INCORRECTLY_CHOSEN_DAYS)
+        }
+
+        if (value == NO_DAYS) {
+            throw HabitException(HabitErrorCode.AT_LEAST_ONE_DAY_IS_NOT_SELECTED)
         }
 
         DayOfWeek.entries.forEachIndexed { index, day ->
@@ -31,6 +35,7 @@ class CheckInDaysSet(
 
     companion object {
         const val ALL_DAYS = "1111111"
+        const val NO_DAYS = "0000000"
         const val DAY_IS_SELECTED = '1'
         const val DAY_IS_NOT_SELECTED = '0'
 

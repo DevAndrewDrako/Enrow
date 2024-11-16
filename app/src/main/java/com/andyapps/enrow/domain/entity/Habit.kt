@@ -10,62 +10,55 @@ import java.util.Calendar
 import java.util.UUID
 
 class Habit private constructor(
-    val id: Id,
-    var name: Name,
+    val id: UUID,
+    var name: String,
     var checkInDays: CheckInDaysSet,
-    val createdAt: DateTime
+    val createdAt: LocalDateTime
 ) {
-
-    class Id(
-        value: String
-    ) {
-        val value: UUID = value.toUUID() ?: throw HabitException(HabitErrorCode.INCORRECT_ID)
-    }
-
-    class Name(
-        val value: String
-    ) {
-        init {
-            if (value.isEmpty() || value.isBlank() || value.length > 24) {
-                throw HabitException(HabitErrorCode.INCORRECT_NAME)
-            }
-        }
-    }
-
-    class DateTime(
-        value: Long
-    ) {
-        val value: LocalDateTime = value.toLocalDateTime()
-    }
-
     fun update(new: Habit) {
         name = new.name
         checkInDays = new.checkInDays
     }
 
     override fun toString(): String {
-        return "Habit [id=\"${id.value}\", name=\"${name.value}\", selectedDays=\"$checkInDays\"]"
+        return "Habit [id=\"${id}\", name=\"${name}\", selectedDays=\"$checkInDays\"]"
     }
 
     companion object {
-        fun create(name: String, checkInDays: String) : Habit {
-            val current = Calendar.getInstance()
+        private const val HABIT_NAME_MAX_LENGTH = 20
 
+        fun create(name: String, checkInDays: String, timeInMillis: Long) : Habit {
             return Habit(
-                id = Id(UUID.randomUUID().toString()),
-                name = Name(name),
-                checkInDays = CheckInDaysSet(checkInDays),
-                createdAt = DateTime(current.timeInMillis)
+                id = UUID.randomUUID(),
+                name = validateName(name),
+                checkInDays = validateCheckInDays(checkInDays),
+                createdAt = timeInMillis.toLocalDateTime()
             )
         }
 
-        fun create(id: String, name: String, selectedDays: String, createdAt: Long) : Habit{
+        fun create(id: String, name: String, selectedDays: String, createdAt: Long) : Habit {
             return Habit(
-                id = Id(id),
-                name = Name(name),
-                checkInDays = CheckInDaysSet(selectedDays),
-                createdAt = DateTime(createdAt)
+                id = UUID.fromString(id),
+                name = validateName(name),
+                checkInDays = validateCheckInDays(selectedDays),
+                createdAt = createdAt.toLocalDateTime()
             )
+        }
+
+        private fun validateName(name: String) : String {
+            if (name.isEmpty() || name.isBlank()) {
+                throw HabitException(HabitErrorCode.NAME_IS_BLANK_OR_EMPTY)
+            }
+
+            if (name.length > HABIT_NAME_MAX_LENGTH) {
+                throw HabitException(HabitErrorCode.NAME_IS_TOO_LONG)
+            }
+
+            return name
+        }
+
+        private fun validateCheckInDays(checkInDays: String) : CheckInDaysSet {
+            return CheckInDaysSet(checkInDays)
         }
     }
 }
